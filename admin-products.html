@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A&Z Girls Fashion - إدارة المنتجات</title>
+<style>
+:root{--bg:#faf8f3;--card:#fff;--text:#211c12;--muted:#756d5e;--green:#bd8c24;--red:#dc2626;--line:#eee5d3}*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Tahoma,Arial,sans-serif;color:var(--text)}.wrap{max-width:980px;margin:30px auto;padding:16px}.head{display:flex;justify-content:space-between;align-items:center;gap:10px}.admin-brand{display:flex;align-items:center;gap:14px}.admin-brand img{width:68px;height:68px;border:2px solid #bd8c24;border-radius:50%;object-fit:cover;background:#fff}.admin-brand h1{margin-bottom:8px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;margin-top:16px;box-shadow:0 8px 25px #0000000a}h1,h2{margin:0 0 14px}.note{color:var(--muted);font-size:14px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.full{grid-column:1/-1}label{display:block;font-weight:700;margin-bottom:6px}input,textarea,select{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:10px;background:#fff;font:inherit}input:focus,textarea:focus{outline:3px solid #bd8c2422;border-color:var(--green)}textarea{min-height:90px;resize:vertical}.row{display:flex;gap:10px;align-items:center}.row input[type=checkbox]{width:auto}.btn{display:inline-block;border:0;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;background:var(--green);color:#17120a;text-align:center}.btn.secondary{background:#171510;color:#f5d77f}.btn.danger{background:var(--red);color:#fff}.btn:disabled{opacity:.6;cursor:wait}.login-card{max-width:480px;margin:8vh auto}.login-card .field{margin-top:14px}.login-card .btn{width:100%;margin-top:18px}.status{margin-top:12px;padding:10px;border-radius:10px;display:none}.ok{display:block;background:#f7f0df;color:#765313}.err{display:block;background:#fee2e2;color:#991b1b}.product{display:grid;grid-template-columns:76px 1fr auto;gap:12px;align-items:center;border-top:1px solid var(--line);padding:12px 0}.product img{width:76px;height:76px;object-fit:cover;border-radius:10px;background:#eee}.price{font-weight:700;color:#8c6413}.old{text-decoration:line-through;color:#9ca3af;margin-inline-start:6px}.actions{display:flex;gap:8px;align-items:center}.icon-btn{display:grid;width:44px;height:44px;place-items:center;border:1px solid var(--line);border-radius:10px;background:#fff;color:#8c6413}.icon-btn:hover{background:#f7f0df}.icon-btn svg{width:20px;height:20px}.edit-dialog{width:min(620px,calc(100% - 28px));max-height:90vh;overflow:auto;border:1px solid var(--line);border-radius:18px;padding:24px;background:var(--card);color:var(--text);box-shadow:0 20px 70px #0005}.edit-dialog::backdrop{background:#17120a88}.edit-dialog h2{margin-bottom:18px}.dialog-actions{display:flex;justify-content:flex-start;gap:10px;margin-top:18px}.current-images{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0 14px}.current-image{position:relative}.current-images img{width:84px;height:84px;object-fit:cover;border:1px solid var(--line);border-radius:10px;background:#eee}.remove-image-btn{position:absolute;top:4px;inset-inline-end:4px;width:25px;height:25px;border:0;border-radius:50%;background:#a42d2d;color:#fff;font-size:17px;line-height:1}.edit-images-note{margin-top:7px}[hidden]{display:none!important}@media(max-width:640px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.product{grid-template-columns:60px 1fr}.product .actions{grid-column:1/-1}.head{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body><main class="wrap">
+<section class="card login-card" id="loginPanel">
+<div class="admin-brand"><img src="Logo.png" alt="شعار A&Z Girls Fashion"><div><h1>دخول المسؤول</h1><div class="note">استخدم البريد وكلمة المرور المسجلين في جدول admins.</div></div></div>
+<form id="loginForm">
+<div class="field"><label for="adminEmail">البريد الإلكتروني</label><input id="adminEmail" type="email" autocomplete="username" required></div>
+<div class="field"><label for="adminPassword">كلمة المرور</label><input id="adminPassword" type="password" autocomplete="current-password" required></div>
+<button class="btn" id="loginBtn" type="submit">تسجيل الدخول</button>
+<div id="loginStatus" class="status" role="status" aria-live="polite"></div>
+</form>
+</section>
+<div id="adminDashboard" hidden>
+<div class="head"><div class="admin-brand"><img src="Logo.png" alt="شعار A&Z Girls Fashion"><div><h1>إضافة وإدارة المنتجات</h1><div class="note">لوحة إدارة متجر A&Z Girls Fashion.</div></div></div><div class="row"><a class="btn secondary" href="index.html" style="text-decoration:none">العودة للمتجر</a><button class="btn secondary" id="reloadBtn" type="button">تحديث المنتجات</button></div></div>
+<section class="card"><div class="row" style="justify-content:space-between"><p class="note">إضافة المنتجات متاحة لحسابات المسؤولين المسجلة في جدول admins.</p><button class="btn secondary" id="logoutBtn" type="button">تسجيل الخروج</button></div></section>
+<section class="card"><h2>إضافة منتج</h2><form id="productForm"><div class="grid">
+<div><label>اسم المنتج *</label><input id="name" required></div><div><label>التصنيف</label><input id="category" placeholder="ملابس"></div>
+<div><label>السعر *</label><input id="price" type="number" min="0" step="0.01" required></div><div><label>السعر القديم</label><input id="oldPrice" type="number" min="0" step="0.01"></div>
+<div><label>المخزون</label><input id="stock" type="number" min="0" step="1" value="0"></div><div class="row" style="padding-top:28px"><input id="active" type="checkbox" checked><label for="active" style="margin:0">المنتج ظاهر في المتجر</label></div>
+<div class="full"><label>الوصف</label><textarea id="description"></textarea></div>
+<div class="full"><label>صور المنتج *</label><input id="images" type="file" accept="image/*" multiple required><div class="note">أول صورة يتم اختيارها ستكون الصورة الرئيسية.</div></div>
+</div><div style="margin-top:16px"><button class="btn" id="submitBtn" type="submit">إضافة المنتج</button></div><div id="status" class="status" aria-live="polite"></div></form></section>
+<section class="card"><h2>المنتجات</h2><div id="products" class="note">اضغط «تحديث المنتجات» لعرض البيانات.</div></section>
+</div>
+<dialog class="edit-dialog" id="editDialog" aria-labelledby="editTitle">
+<h2 id="editTitle">تعديل تفاصيل المنتج</h2>
+<form id="editForm">
+<input id="editId" type="hidden">
+<div class="grid">
+<div><label for="editName">اسم المنتج *</label><input id="editName" required></div>
+<div><label for="editCategory">التصنيف</label><input id="editCategory" placeholder="ملابس"></div>
+<div><label for="editPrice">السعر *</label><input id="editPrice" type="number" min="0" step="0.01" required></div>
+<div><label for="editOldPrice">السعر القديم</label><input id="editOldPrice" type="number" min="0" step="0.01"></div>
+<div><label for="editStock">المخزون</label><input id="editStock" type="number" min="0" step="1" required></div>
+<div class="row"><input id="editActive" type="checkbox"><label for="editActive" style="margin:0">المنتج ظاهر في المتجر</label></div>
+<div class="full"><label for="editDescription">الوصف</label><textarea id="editDescription"></textarea></div>
+<div class="full"><label>صور المنتج الحالية</label><div class="current-images" id="editCurrentImages"></div><label for="editImages">إضافة صور جديدة</label><input id="editImages" type="file" accept="image/*" multiple><div class="note edit-images-note">الصور الجديدة ستُضاف إلى الصور الحالية. لحذف صورة اضغط × عليها.</div></div>
+</div>
+<div id="editStatus" class="status" role="status" aria-live="polite"></div>
+<div class="dialog-actions"><button class="btn" id="saveEditBtn" type="submit">حفظ التعديلات</button><button class="btn secondary" id="cancelEditBtn" type="button">إلغاء</button></div>
+</form>
+</dialog>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const SUPABASE_URL='https://utveqafgrnjxvprpedba.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_ZTiDMTbKajTwjxlWYyn9IQ_bATWbIX6';
+const API_URL=SUPABASE_URL+'/functions/v1/admin-api';
+const SESSION_KEY='azstore_admin_token';
+let adminToken=sessionStorage.getItem(SESSION_KEY)||'';
+let productsById=new Map();
+
+function message(element,text,ok=false){element.textContent=text;element.className='status '+(ok?'ok':'err')}
+function errorText(text){try{const data=JSON.parse(text);if(data.code==='NOT_FOUND'||data.message==='Requested function was not found')return 'دالة admin-api غير منشورة على Supabase. انشر الدالة ثم أعد المحاولة.';if(data.error==='الطلب غير معروف.')return 'نسخة دالة admin-api المنشورة قديمة ولا تدعم حفظ التعديلات. انشر النسخة المحلية المحدّثة من مجلد المشروع ثم سجّل الدخول مجددًا.';return data.error||data.message||text}catch{return text}}
+
+async function adminRequest(action,data={},token=adminToken){
+  const isForm=data instanceof FormData;
+  const headers={apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:'Bearer '+(token||SUPABASE_PUBLISHABLE_KEY)};
+  let body;
+  if(isForm){data.set('action',action);body=data}
+  else{headers['Content-Type']='application/json';body=JSON.stringify({action,...data})}
+  let response;
+  try{response=await fetch(API_URL,{method:'POST',headers,body})}
+  catch(error){
+    if(error instanceof TypeError||error.message==='Failed to fetch')throw new Error('تعذر الاتصال بدالة الإدارة. غالبًا لم تُنشر دالة admin-api بعد. انشرها على مشروع Supabase نفسه، ثم أعد تحميل الصفحة.');
+    throw error;
+  }
+  const text=await response.text();
+  if(!response.ok)throw new Error(errorText(text)||('HTTP '+response.status));
+  return text?JSON.parse(text):null;
+}
+
+function setDashboard(visible){$('loginPanel').hidden=visible;$('adminDashboard').hidden=!visible}
+
+async function login(event){
+  event.preventDefault();
+  const button=$('loginBtn');
+  button.disabled=true;
+  message($('loginStatus'),'جارٍ التحقق من البريد وكلمة المرور...');
+  try{
+    const result=await adminRequest('login',{email:$('adminEmail').value.trim(),password:$('adminPassword').value},'');
+    adminToken=result.token;
+    sessionStorage.setItem(SESSION_KEY,adminToken);
+    $('adminPassword').value='';
+    setDashboard(true);
+    await loadProducts();
+  }catch(error){
+    adminToken='';
+    sessionStorage.removeItem(SESSION_KEY);
+    setDashboard(false);
+    message($('loginStatus'),'تعذر تسجيل الدخول: '+error.message);
+  }finally{button.disabled=false}
+}
+
+function logout(){
+  adminToken='';
+  sessionStorage.removeItem(SESSION_KEY);
+  $('adminPassword').value='';
+  $('loginStatus').textContent='';
+  setDashboard(false);
+}
+
+function escapeHtml(value){return String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]))}
+
+function renderProducts(rows){
+  if(!rows.length){$('products').innerHTML='<p class="note">لا توجد منتجات حتى الآن.</p>';return}
+  productsById=new Map(rows.map(product=>[String(product.id),product]));
+  $('products').innerHTML=rows.map(product=>{
+    const images=[...(product.product_images||[])].sort((a,b)=>(Number(b.is_main)-Number(a.is_main))||(Number(a.sort_order)-Number(b.sort_order)));
+    const image=images[0]?.image_url||'';
+    return '<div class="product">'+(image?'<img src="'+escapeHtml(image)+'" alt="">':'<div></div>')+
+      '<div><strong>'+escapeHtml(product.name)+'</strong><div><span class="price">'+Number(product.price).toFixed(2)+'</span>'+
+      (product.old_price!=null?'<span class="old">'+Number(product.old_price).toFixed(2)+'</span>':'')+
+      '</div><div class="note">المخزون: '+(product.stock??0)+' | '+(product.active?'ظاهر':'مخفي')+
+      '</div></div><div class="actions"><button class="icon-btn" type="button" aria-label="تعديل '+escapeHtml(product.name)+'" title="تعديل المنتج" onclick="editProduct('+Number(product.id)+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg></button><button class="btn danger" type="button" onclick="removeProduct('+Number(product.id)+')">حذف</button></div></div>';
+  }).join('');
+}
+
+function editProduct(id){
+  const product=productsById.get(String(id));
+  if(!product){alert('تعذر العثور على المنتج. حدّث القائمة ثم حاول مرة أخرى.');return}
+  $('editId').value=product.id;
+  $('editName').value=product.name||'';
+  $('editCategory').value=product.category||'';
+  $('editPrice').value=product.price??'';
+  $('editOldPrice').value=product.old_price??'';
+  $('editStock').value=product.stock??0;
+  $('editActive').checked=Boolean(product.active);
+  $('editDescription').value=product.description||'';
+  $('editImages').value='';
+  renderEditImages(product);
+  $('editStatus').textContent='';
+  $('editStatus').className='status';
+  $('editDialog').showModal();
+}
+
+function renderEditImages(product){
+  const images=[...(product.product_images||[])].sort((a,b)=>(Number(b.is_main)-Number(a.is_main))||(Number(a.sort_order)-Number(b.sort_order)));
+  $('editCurrentImages').innerHTML=images.length
+    ?images.map(image=>'<div class="current-image"><img src="'+escapeHtml(image.image_url)+'" alt="صورة حالية للمنتج" loading="lazy"><button class="remove-image-btn" type="button" data-product-id="'+Number(product.id)+'" data-image-url="'+escapeHtml(image.image_url)+'" aria-label="حذف هذه الصورة" title="حذف الصورة">×</button></div>').join('')
+    :'<span class="note">لا توجد صور حالية.</span>';
+}
+
+async function saveProductEdit(event){
+  event.preventDefault();
+  const button=$('saveEditBtn');
+  button.disabled=true;
+  message($('editStatus'),'جارٍ حفظ التعديلات...',true);
+  try{
+    const form=new FormData();
+    form.set('id',$('editId').value);
+    form.set('name',$('editName').value.trim());
+    form.set('category',$('editCategory').value.trim());
+    form.set('price',$('editPrice').value);
+    form.set('old_price',$('editOldPrice').value);
+    form.set('stock',$('editStock').value);
+    form.set('active',String($('editActive').checked));
+    form.set('description',$('editDescription').value.trim());
+    const newImages=[...$('editImages').files];
+    newImages.forEach(file=>form.append('images',file));
+    await adminRequest('updateProduct',form);
+    $('editImages').value='';
+    const refreshed=await loadProducts();
+    if(!refreshed){
+      message($('editStatus'),'تم حفظ التعديلات، لكن تعذر تحديث قائمة المنتجات. اضغط «تحديث المنتجات» للتحقق.',true);
+      return;
+    }
+    const updatedProduct=productsById.get(String($('editId').value));
+    if(updatedProduct)renderEditImages(updatedProduct);
+    message($('editStatus'),newImages.length?'تم حفظ التعديلات وإضافة الصور الجديدة بنجاح.':'تم حفظ التعديلات بنجاح.',true);
+  }catch(error){message($('editStatus'),'تعذر حفظ التعديلات: '+error.message)}
+  finally{button.disabled=false}
+}
+
+async function removeProductImage(productId,imageUrl){
+  if(!confirm('حذف هذه الصورة من المنتج؟'))return;
+  const buttons=$('editCurrentImages').querySelectorAll('.remove-image-btn');
+  buttons.forEach(button=>button.disabled=true);
+  try{
+    const result=await adminRequest('deleteProductImage',{product_id:productId,image_url:imageUrl});
+    await loadProducts();
+    const updated=productsById.get(String(productId));
+    if(updated&&$('editDialog').open)renderEditImages(updated);
+    if(result?.warning)message($('editStatus'),result.warning);
+  }catch(error){message($('editStatus'),'تعذر حذف الصورة: '+error.message)}
+}
+
+async function loadProducts(){
+  try{renderProducts(await adminRequest('listProducts'));return true}
+  catch(error){
+    $('products').textContent='تعذر تحميل المنتجات: '+error.message;
+    if(/جلسة|دخول|token|unauthorized/i.test(error.message)){
+      adminToken='';
+      sessionStorage.removeItem(SESSION_KEY);
+      setDashboard(false);
+      message($('loginStatus'),'انتهت الجلسة. سجّل الدخول مرة أخرى.');
+    }
+    return false;
+  }
+}
+
+async function addProduct(event){
+  event.preventDefault();
+  const button=$('submitBtn');
+  button.disabled=true;
+  message($('status'),'جاري إضافة المنتج...',true);
+  try{
+    const files=[...$('images').files];
+    if(!files.length)throw new Error('اختر صورة واحدة على الأقل.');
+    const form=new FormData();
+    form.set('name',$('name').value.trim());
+    form.set('price',$('price').value);
+    form.set('old_price',$('oldPrice').value);
+    form.set('description',$('description').value.trim());
+    form.set('category',$('category').value.trim());
+    form.set('stock',$('stock').value||'0');
+    form.set('active',String($('active').checked));
+    files.forEach(file=>form.append('images',file));
+    await adminRequest('addProduct',form);
+    message($('status'),'تمت إضافة المنتج ورفع الصور بنجاح ✅',true);
+    event.target.reset();
+    $('active').checked=true;
+    $('stock').value=0;
+    await loadProducts();
+  }catch(error){message($('status'),'خطأ: '+error.message)}
+  finally{button.disabled=false}
+}
+
+async function removeProduct(id){
+  if(!confirm('حذف المنتج وصوره؟'))return;
+  try{await adminRequest('deleteProduct',{id});await loadProducts()}
+  catch(error){alert('تعذر الحذف: '+error.message)}
+}
+
+$('loginForm').addEventListener('submit',login);
+$('logoutBtn').addEventListener('click',logout);
+$('productForm').addEventListener('submit',addProduct);
+$('reloadBtn').addEventListener('click',loadProducts);
+$('editForm').addEventListener('submit',saveProductEdit);
+$('cancelEditBtn').addEventListener('click',()=>$('editDialog').close());
+$('editCurrentImages').addEventListener('click',event=>{
+  const button=event.target.closest('.remove-image-btn');
+  if(button)removeProductImage(Number(button.dataset.productId),button.dataset.imageUrl);
+});
+
+if(adminToken){
+  adminRequest('listProducts').then(renderProducts).then(()=>setDashboard(true)).catch(()=>{
+    adminToken='';
+    sessionStorage.removeItem(SESSION_KEY);
+    setDashboard(false);
+  });
+}
+</script></body></html>
